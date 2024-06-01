@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mobile_hris/components/custom_components.dart';
 import 'package:mobile_hris/core/constant.dart';
 import 'package:mobile_hris/services/auth_service.dart';
 
@@ -20,6 +21,7 @@ class AuthCtrl extends GetxController {
     if (email.value.isEmpty || password.value.isEmpty) {
       Get.snackbar('Error', 'Email and password cannot be empty');
     } else {
+      loading('Please wait...');
       var response = await authService.login(email.value, password.value);
       if (response) {
         Get.offAllNamed('/home');
@@ -28,6 +30,7 @@ class AuthCtrl extends GetxController {
           '',
         );
       } else {
+        Get.back();
         Get.snackbar('Login Failed', 'Email or password is incorrect');
       }
     }

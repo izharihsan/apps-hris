@@ -31,6 +31,7 @@ class AuthService {
       print(response.data['name']);
 
       if (response.statusCode == 200) {
+        // GetStorage().write('user_id', response.data['id']);
         GetStorage().write('user_name', response.data['name']);
         return true;
       } else {

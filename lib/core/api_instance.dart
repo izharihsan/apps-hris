@@ -8,7 +8,7 @@ Dio getApiClient() {
   dio.interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) {
       options.headers['Authorization'] = 'Bearer ${box.read('token')}';
-      options.headers['Content-Type'] = 'application/json';
+      // options.headers['Content-Type'] = 'application/json';
       options.headers['Accept'] = 'application/json';
       return handler.next(options);
     },

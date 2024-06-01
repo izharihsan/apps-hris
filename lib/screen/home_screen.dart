@@ -5,12 +5,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:mobile_hris/components/custom_components.dart';
 import 'package:mobile_hris/controllers/home_ctrl.dart';
 import 'package:mobile_hris/core/constant.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final homeCtrl2 = Get.put(HomeCtrl());
+    homeCtrl2.getUserAttendance();
     return GetBuilder<HomeCtrl>(
       init: HomeCtrl(),
       builder: (homeCtrl) => Scaffold(
@@ -37,7 +40,7 @@ class HomeScreen extends StatelessWidget {
           unselectedItemColor: Colors.grey,
           unselectedLabelStyle: TextStyle(color: Colors.grey),
           selectedLabelStyle: TextStyle(color: blueDeepColor),
-          elevation: 16,
+          elevation: 20,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -76,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            "it's Sunday, 21 Agustus 2022",
+                            "it's " + homeCtrl.getTimeNow().toString(),
                             textScaler: TextScaler.linear(
                                 ScaleSize.textScaleFactor(context)),
                             style: TextStyle(
@@ -112,7 +115,8 @@ class HomeScreen extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('FRI \n31',
+                                Text(
+                                    '${homeCtrl.dayString.toUpperCase()} \n${homeCtrl.dateNumber}',
                                     style: TextStyle(
                                         fontSize: 20,
                                         color: Colors.white,
@@ -129,7 +133,20 @@ class HomeScreen extends StatelessWidget {
                                             ScaleSize.textScaleFactor(
                                                 context))),
                                     Text(
-                                      '21:30',
+                                      homeCtrl2.attendData != {} &&
+                                              homeCtrl2.attendData[
+                                                      'start_time'] !=
+                                                  null
+                                          ?
+                                          // get only HH:mm from the time
+                                          homeCtrl2.attendData['start_time']
+                                                  .toString()
+                                                  .split(':')[0] +
+                                              ':' +
+                                              homeCtrl2.attendData['start_time']
+                                                  .toString()
+                                                  .split(':')[1]
+                                          : '--:--',
                                       textScaler: TextScaler.linear(
                                           ScaleSize.textScaleFactor(context)),
                                       style: TextStyle(
@@ -150,7 +167,20 @@ class HomeScreen extends StatelessWidget {
                                             ScaleSize.textScaleFactor(
                                                 context))),
                                     Text(
-                                      '--:--',
+                                      homeCtrl2.attendData != {} &&
+                                              homeCtrl2
+                                                      .attendData['end_time'] !=
+                                                  null
+                                          ?
+                                          // get only HH:mm from the time
+                                          homeCtrl2.attendData['end_time']
+                                                  .toString()
+                                                  .split(':')[0] +
+                                              ':' +
+                                              homeCtrl2.attendData['end_time']
+                                                  .toString()
+                                                  .split(':')[1]
+                                          : '--:--',
                                       textScaler: TextScaler.linear(
                                           ScaleSize.textScaleFactor(context)),
                                       style: TextStyle(
@@ -237,19 +267,21 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 16),
-                    _buildListTile(
-                        'Overtimes', Icons.timer, Colors.blue, context),
-                    _buildListTile(
-                        'Schedule', Icons.schedule, primaryColor, context),
+                    _buildListTile('Overtimes', Icons.timer, Colors.blue,
+                        context, '/overtimes'),
+                    _buildListTile('Schedule', Icons.schedule, primaryColor,
+                        context, '/schedules'),
                     _buildListTile(
                       'Reimbursement',
                       Icons.receipt_long,
                       Colors.green,
                       context,
+                      '/reimbursements',
                     )
                   ],
                 ),
               ),
+              SizedBox(height: 10),
             ],
           ),
         ),
@@ -282,7 +314,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile(String title, IconData icon, Color iconColor, context) {
+  Widget _buildListTile(
+      String title, IconData icon, Color iconColor, context, routeName) {
     return Card(
       child: ListTile(
         shape: RoundedRectangleBorder(
@@ -296,6 +329,7 @@ class HomeScreen extends StatelessWidget {
         trailing: Icon(Icons.chevron_right),
         onTap: () {
           // Handle navigation or action
+          Get.toNamed(routeName);
         },
       ),
     );
