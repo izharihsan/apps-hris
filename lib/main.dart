@@ -10,6 +10,7 @@ import 'package:mobile_hris/screen/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+print("test");
   runApp(const MyApp());
 }
 
